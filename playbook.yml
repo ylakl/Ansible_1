@@ -19,10 +19,16 @@
        repo: https://github.com/ylakl/Boxfuse.git
        dest: /opt/Boxfuse
 
-  -name: build project
+  - name: build project
      command: mvn clean package
      args:
        chdir: /opt/Boxfuse
+
+  - name: copy war
+    copy:
+      src: /opt/Boxfuse/target/hello-1.0.war
+      dest: /tmp/
+
 
 - name: run progect
   hosts: web
@@ -42,7 +48,7 @@
 
   - name: copy war
      fetch:
-       src: /opt/Boxfuse/target/hello-1.0.war
+       src: /tmp/hello-1.0.war
        dest: /usr/local/tomcat/webapps/
 
   - name: start tomcat
