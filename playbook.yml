@@ -5,7 +5,6 @@
 
   tasks:
   - name: Обновить кэш репозиториев менеджера пакетов APT
-     become: yes
      apt:
         update_cache: yes
   - name: install packages
@@ -31,7 +30,6 @@
 
   tasks:
   - name: Обновить кэш репозиториев менеджера пакетов APT
-     become: yes
      apt:
        update_cache: yes
 
