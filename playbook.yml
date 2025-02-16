@@ -1,1 +1,55 @@
+---
+- name: build project
+  hosts: db
+  become: yes
+
+  tasks:
+  - name: Обновить кэш репозиториев менеджера пакетов APT
+     become: true
+     apt:
+        update_cache: yes
+  - name: install packages
+     apt:
+       name:
+         - git
+         - maven:3.6.1-jdk-7-alpine
+       state: present
+
+  - name: fit clone project
+     git:
+       repo: https://github.com/ylakl/Boxfuse.git
+       dest: /opt/Boxfuse
+
+  -name: build project
+     command: mvn clean package
+     args:
+       chdir: /opt/Boxfuse
+
+- name: run progect
+  hosts: web
+  become: yes
+
+  tasks:
+  - name: Обновить кэш репозиториев менеджера пакетов APT
+     become: true
+     apt:
+       update_cache: yes
+
+  - name: build artifacts
+     apt:
+      name:
+       - java-1.7-openjdk
+       - tomcat9
+      state: present
+
+  - name: copy war
+     fetch:
+       src: /opt/Boxfuse/target/hello-1.0.war
+       dest: /usr/local/tomcat/webapps/
+
+  - name: start tomcat
+      service:
+       name: tomcat
+       state: started
+
 
